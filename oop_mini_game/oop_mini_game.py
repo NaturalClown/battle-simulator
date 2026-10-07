@@ -112,13 +112,13 @@ pygame.display.set_caption("Battle simulation")
 running = True
 epoch = 0
 while running:
-    screen.fill((255, 255, 255 ))
+    screen.fill((0, 0, 0 ))
     
     for unit in Unit.units:
         draw_unit(screen, unit)
     draw_chat(screen)
     font = pygame.font.Font(None, 40)
-    title = font.render(str(epoch), True, (0, 0, 0))
+    title = font.render(str(epoch), True, (255, 255, 255))
     screen.blit(title, (500, 50))
     pygame.display.update()
 
