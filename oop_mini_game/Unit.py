@@ -16,15 +16,6 @@ class Unit:
             if unit.index == index:
                 return unit
         return None
-    # @classmethod
-    # def search_enemy(cls, point, clan):
-    #     res = None
-    #     min_dist = 100
-    #     for i in cls.units:
-    #         if i.clan != clan and Point2D.dist(i.position, point) < min_dist:
-    #             res = i
-    #             min_dist = Point2D.dist(i.position, point)
-    #     return res
     
     @classmethod
     def what_can_i_see(cls, point, radius):
@@ -100,13 +91,13 @@ class Unit:
             if res[0] == '3':
                 if len(res[2]) <= 300:
                     self.context.append({
-                        'type' : 'write', #0 - write, 1 - get
+                        'type' : 'write', 
                         'with_unit' : int(res[1]),
                         'content': res[2]
                         })
                     target = Unit.get_by_index(int(res[1]))
                     target.context.append({
-                        'type' : 'get', #0 - write, 1 - get
+                        'type' : 'get',
                         'with_unit' : self.index,
                         'content': res[2]
                         })
@@ -149,10 +140,7 @@ class Unit:
                        if you would try to attack the unit you cant - your move will be skippep. DONT WRITE ANYTHING ELSE!!!'''}],
             think=False           
         )
-        # print( f'''Your are player in a little battle simulation. It is step by step game, so you can choose only 1 action: move in some diraction, say something short (no more than 300 signs) to other unit or attack other unit. Your attack range is equals with your speed
-        #                 Your id: {dir['index']}, your clan: {dir['clan']}, your hp: {dir['hp']}, your speed: {dir['speed']}, your damage: {dir['damage']}, your context of messages: {dir['context']}. Now you are in the point {dir['position']} and see this list of units: {see_units}. 
-        #                 Give a short answer: what will you do, if it is movement - write '1 ' + 2 numbers of coordinates where you want to end up (for example - '1 20 40'), if you want to attack - write '2 'index of unt you want to attack (for example - '2 4'), if you want to write a message - write '3 ' and say to which unit you want to write the message and content of this message (for example - '3 5 "Hello!"').
-        #                 if you would try to attack the unit you cant - your move will be skippep. DONT WRITE ANYTHING ELSE!!!''')
+
         self.parse(response.message.content)
         
         
@@ -167,9 +155,7 @@ class Unit:
     def attack(self, victim):
         victim.hp_bar = victim.hp_bar - self.damage
         
-    # def can_attack(self):
-    #     if self.position == self.enemy.position: return True
-    #     return False
+
 
     @classmethod
     def check(cls):
@@ -191,30 +177,5 @@ class Unit:
         for i in cls.units:
             seeings = Unit.what_can_i_see(i.position, i.rov)
             i.think(seeings)
-            # for j in seeings: 
-            #     if j.clan != i.clan: 
-            #         i.enemy = j
-            #         break
-            # if i.enemy != None:
-            #     if i.can_attack() == 0:
-            #         i.move(i.enemy.position)
-            #     if i.can_attack() == 1: 
-            #         i.attack(i.enemy)
             cls.check()
 
-
-class Archer(Unit):
-    def __init__(self, hp, damage, point, speed, clan, attack_range):
-        super().__init__(hp, damage, point, speed, clan)
-        self.attack_range = attack_range
-        
-    def move(self, goal):
-        v = Point2D(goal.x - self.position.x, goal.y - self.position.y)
-        if abs(v) < self.speed + self.attack_range: 
-            self.position = goal
-        else:
-            self.position = self.position + v.normalize() * self.speed
-            
-    def can_attack(self):
-        if Point2D.dist(self.position, self.enemy.position) <= self.attack_range: return True
-        return False
